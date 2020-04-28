@@ -56,9 +56,6 @@ var node = svg
   .data(agenda.nodes)
   .enter()
   .append("circle")
-  .attr("class", function (d) {
-    return d.id;
-  })
   .attr("r", 5)
   .attr("fill", function (d) {
     if (d.passed) return "green";
