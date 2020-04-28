@@ -1,35 +1,9 @@
 var selectedNodeClass="selectedNode";
-var graph = {
-  nodes: [
-    { id: "C#", group: 1, parent: null },
-    { id: "Data Types", group: 2, passed: false, parent: "C#" },
-    { id: "Value Types", group: 3, passed: true, parent: "Data Types" },
-    { id: "Integers", group: 4, passed: true, parent: "Value Types" },
-    { id: "ّFloating_points", group: 4, passed: true, parent: "Value Types" },
-    { id: "Enumeration", group: 4, passed: true, parent: "Value Types" },
-    { id: "Tuple", group: 4, passed: true, parent: "Value Types" },
-    { id: "Char", group: 4, passed: true, parent: "Value Types" },
-    { id: "DateTime", group: 4, passed: true, parent: "Value Types" },
-    { id: "Refrence Types", group: 3, passed: false, parent: "Data Types" },
-    { id: "String", group: 5, passed: false, parent: "Refrence Types" },
-  ],
-  links: [
-    { source: "Data Types", target: "C#", value: 6 },
-    { source: "Value Types", target: "Data Types", value: 5 },
-    { source: "Integers", target: "Value Types", value: 5 },
-    { source: "ّFloating_points", target: "Value Types", value: 5 },
-    { source: "Enumeration", target: "Value Types", value: 5 },
-    { source: "Tuple", target: "Value Types", value: 5 },
-    { source: "Char", target: "Value Types", value: 5 },
-    { source: "DateTime", target: "Value Types", value: 5 },
-    { source: "Refrence Types", target: "Data Types", value: 5 },
-    { source: "String", target: "Refrence Types", value: 4 },
-  ],
-};
+
 
 var calculateRadius = function (id, size) {
   if (!size) size = 10;
-  var children = graph.nodes.filter((x) => x.parent === id);
+  var children = agenda.nodes.filter((x) => x.parent === id);
   children.forEach((child) => {
     size += child.group + calculateRadius(child.id);
   });
@@ -60,12 +34,12 @@ var link = svg
   .append("g")
   .attr("class", "links")
   .selectAll("line")
-  .data(graph.links)
+  .data(agenda.links)
   .enter()
   .append("line")
   .attr("stroke-width", 2)
   .style("stroke", function (d) {
-    var source = graph.nodes.filter((x) => x.id === d.source);
+    var source = agenda.nodes.filter((x) => x.id === d.source);
     console.log("s:", source);
     if (source[0].passed) {
       return "LightSeaGreen";
@@ -79,7 +53,7 @@ var node = svg
 
   .attr("class", "nodes")
   .selectAll("circle")
-  .data(graph.nodes)
+  .data(agenda.nodes)
   .enter()
   .append("circle")
   .attr("class", function (d) {
@@ -106,7 +80,7 @@ var text = svg
   .append("g")
   .attr("class", "texts")
   .selectAll("text")
-  .data(graph.nodes)
+  .data(agenda.nodes)
   .enter()
   .append("text")
   .attr("font-size", 7)
@@ -126,7 +100,7 @@ var passedIcon = svg
   .append("g")
   .attr("class", "texts")
   .selectAll("text")
-  .data(graph.nodes.filter((x) => x.passed))
+  .data(agenda.nodes.filter((x) => x.passed))
   .enter()
   .append("text")
   .attr("font-family", "FontAwesome")
@@ -140,9 +114,9 @@ var passedIcon = svg
   .call(
     d3.drag().on("start", dragstarted).on("drag", dragged).on("end", dragended)
   );
-simulation.nodes(graph.nodes).on("tick", ticked);
+simulation.nodes(agenda.nodes).on("tick", ticked);
 
-simulation.force("link").links(graph.links);
+simulation.force("link").links(agenda.links);
 
 function ticked() {
   link

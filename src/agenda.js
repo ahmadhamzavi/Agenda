@@ -1,0 +1,27 @@
+var agenda = {
+  nodes: [
+    { id: "C#", group: 1, parent: null },
+    { id: "Data Types", group: 2, passed: false, parent: "C#" },
+    { id: "Value Types", group: 3, passed: true, parent: "Data Types" },
+    { id: "Integers", group: 4, passed: true, parent: "Value Types" },
+    { id: "ّFloating_points", group: 4, passed: true, parent: "Value Types" },
+    { id: "Enumeration", group: 4, passed: true, parent: "Value Types" },
+    { id: "Tuple", group: 4, passed: true, parent: "Value Types" },
+    { id: "Char", group: 4, passed: true, parent: "Value Types" },
+    { id: "DateTime", group: 4, passed: true, parent: "Value Types" },
+    { id: "Refrence Types", group: 3, passed: false, parent: "Data Types" },
+    { id: "String", group: 5, passed: false, parent: "Refrence Types" },
+  ],
+  links: [
+    { source: "Data Types", target: "C#", value: 6 },
+    { source: "Value Types", target: "Data Types", value: 5 },
+    { source: "Integers", target: "Value Types", value: 5 },
+    { source: "ّFloating_points", target: "Value Types", value: 5 },
+    { source: "Enumeration", target: "Value Types", value: 5 },
+    { source: "Tuple", target: "Value Types", value: 5 },
+    { source: "Char", target: "Value Types", value: 5 },
+    { source: "DateTime", target: "Value Types", value: 5 },
+    { source: "Refrence Types", target: "Data Types", value: 5 },
+    { source: "String", target: "Refrence Types", value: 4 },
+  ],
+};
