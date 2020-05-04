@@ -1,5 +1,4 @@
-var selectedNodeClass="selectedNode";
-
+var selectedNodeClass = "selectedNode";
 
 var calculateRadius = function (id, size) {
   if (!size) size = 10;
@@ -10,11 +9,19 @@ var calculateRadius = function (id, size) {
   return size;
 };
 
+var screenWidth;
+var screenHeight;
+screenWidth = window.screen.width-100;
+screenHeight = window.innerHeight-100;
+var zoom_g;
+var svg = d3
+  .select("#graph")
+  .append("svg")
+  .attr("width", screenWidth)
+  .attr("height", screenHeight);
+  zoomEnabale();
 
-var svg = d3.select("svg"),
-  width = +svg.attr("width"),
-  height = +svg.attr("height");
-
+ zoom_g = svg.append("g");
 var color = d3.scaleOrdinal(d3.schemeCategory20c);
 var simulation = d3
   .forceSimulation()
@@ -28,9 +35,9 @@ var simulation = d3
     "charge",
     d3.forceManyBody().strength(-140).distanceMax(50).distanceMin(5)
   )
-  .force("center", d3.forceCenter(width / 2, height / 2));
+  .force("center", d3.forceCenter(screenWidth / 2, screenHeight / 2));
 
-var link = svg
+var link = zoom_g
   .append("g")
   .attr("class", "links")
   .selectAll("line")
@@ -48,7 +55,7 @@ var link = svg
     }
   });
 
-var node = svg
+var node = zoom_g
   .append("g")
 
   .attr("class", "nodes")
@@ -63,17 +70,17 @@ var node = svg
   })
   .on("click", function (d) {
     console.log(d3.selectAll("circle"));
-    d3.selectAll("circle")._groups[0].forEach(circle => {
+    d3.selectAll("circle")._groups[0].forEach((circle) => {
       d3.select(circle).node().classList.remove(selectedNodeClass);
     });
-    
+
     d3.select(this).node().classList.add(selectedNodeClass);
   })
   .call(
     d3.drag().on("start", dragstarted).on("drag", dragged).on("end", dragended)
   );
 
-var text = svg
+var text = zoom_g
   .append("g")
   .attr("class", "texts")
   .selectAll("text")
@@ -93,7 +100,7 @@ var text = svg
     d3.drag().on("start", dragstarted).on("drag", dragged).on("end", dragended)
   );
 
-var passedIcon = svg
+var passedIcon = zoom_g
   .append("g")
   .attr("class", "texts")
   .selectAll("text")
@@ -153,7 +160,6 @@ function ticked() {
       return d.y - 5;
     });
 }
-
 function dragstarted(d) {
   if (!d3.event.active) simulation.alphaTarget(0.3).restart();
   d.fx = d.x;
@@ -169,4 +175,25 @@ function dragended(d) {
   if (!d3.event.active) simulation.alphaTarget(0);
   d.fx = null;
   d.fy = null;
+}
+var _zoom;
+function zoomEnabale() {
+  //---DONE---> zoomIn and zoomOut button -> https://codepen.io/ReklatsMasters/pen/Ewqrdm?editors=0010
+  //---DONE---> add home button -> zoom to fouced person http://www.robschmuecker.com/d3-js-drag-and-drop-zoomable-tree/
+  //                      -> click to center https://bl.ocks.org/mbostock/2206340
+  _zoom = d3
+    .zoom()
+    .scaleExtent([0.5, 5])
+    .on("zoom", function zooming() {
+      if (d3.event) {
+        // var scale = d3.zoomTransform(zoom_g.node()).k;
+
+        zoom_g.attr("transform", d3.event.transform);
+        // drawBrush();
+        // drawBrush();
+      }
+    });
+
+  svg.call(_zoom); //.on("wheel.zoom", null);
+  // headerButtons();
 }
