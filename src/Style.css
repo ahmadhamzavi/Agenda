@@ -1,5 +1,5 @@
 .selectedNode {
-  r: 10;
+  [attr.r]: 10;
 }
 .links line {
   stroke: #999;
