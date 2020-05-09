@@ -1,19 +1,22 @@
 var selectedNodeClass = "selectedNode";
 
-var calculateRadius = function (id, size) {
-  if (!size) size = 10;
-  var children = agenda.nodes.filter((x) => x.parent === id);
-  children.forEach((child) => {
-    size += child.group + calculateRadius(child.id);
-  });
-  return size;
-};
+// var calculateRadius = function (id, size) {
+//   if (!size) size = 10;
+//   var children = agenda.nodes.filter((x) => x.parent === id);
+//   children.forEach((child) => {
+//     size += child.group + calculateRadius(child.id);
+//   });
+//   return size;
+// };
 
 var screenWidth;
 var screenHeight;
 screenWidth = window.screen.width-100;
 screenHeight = window.innerHeight-100;
+var nodes,links;
 var zoom_g;
+nodes = agenda.nodes.filter(x=>x.priority==1);
+links = agenda.links;
 var svg = d3
   .select("#graph")
   .append("svg")
@@ -41,12 +44,12 @@ var link = zoom_g
   .append("g")
   .attr("class", "links")
   .selectAll("line")
-  .data(agenda.links)
+  .data(links)
   .enter()
   .append("line")
   .attr("stroke-width", 2)
   .style("stroke", function (d) {
-    var source = agenda.nodes.filter((x) => x.id === d.source);
+    var source = nodes.filter((x) => x.id === d.source);
     console.log("s:", source);
     if (source[0].passed) {
       return "LightSeaGreen";
@@ -60,7 +63,7 @@ var node = zoom_g
 
   .attr("class", "nodes")
   .selectAll("circle")
-  .data(agenda.nodes)
+  .data(nodes)
   .enter()
   .append("circle")
   .attr("r", 5)
@@ -84,7 +87,7 @@ var text = zoom_g
   .append("g")
   .attr("class", "texts")
   .selectAll("text")
-  .data(agenda.nodes)
+  .data(nodes)
   .enter()
   .append("text")
   .attr("font-size", 7)
@@ -94,7 +97,7 @@ var text = zoom_g
     return "red";
   })
   .text(function (d) {
-    return d.id + " " + calculateRadius(d.id) / 20;
+    return d.id ;//+ " " + calculateRadius(d.id) / 20;
   })
   .call(
     d3.drag().on("start", dragstarted).on("drag", dragged).on("end", dragended)
@@ -104,7 +107,7 @@ var passedIcon = zoom_g
   .append("g")
   .attr("class", "texts")
   .selectAll("text")
-  .data(agenda.nodes.filter((x) => x.passed))
+  .data(nodes.filter((x) => x.passed))
   .enter()
   .append("text")
   .attr("font-family", "FontAwesome")
@@ -120,7 +123,7 @@ var passedIcon = zoom_g
   );
 simulation.nodes(agenda.nodes).on("tick", ticked);
 
-simulation.force("link").links(agenda.links);
+simulation.force("link").links(links);
 
 function ticked() {
   link
